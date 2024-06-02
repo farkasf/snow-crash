@@ -20,7 +20,10 @@
 	<div id="snow-container"></div>
 	<div class="content">
 		<div>
-			<h1>snow-crash<span style="color: white;margin-left: 3%;">level00</span></h1>
+			<h1>snow-crash
+				<a href="#" style="color: white; margin-left: 3%; text-decoration: none;"
+					onclick="alert('Hello');">level00</a>
+			</h1>
 		</div>
 		<div class="container">
 			<div class="box">
@@ -110,8 +113,10 @@
 			createSnow(100);
 		});
 
-		window.addEventListener("click", () => {
-			removeSnow()
+		window.addEventListener("keydown", (event) => {
+			if (event.code === "Space") {
+				removeSnow();
+			}
 		});
 	</script>
 </body>

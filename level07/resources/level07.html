@@ -22,50 +22,53 @@
 		<div>
 			<h1>snow-crash
 				<a href="#" style="color: white; margin-left: 3%; text-decoration: none;"
-					onclick="alert('Hello');">level01</a>
+					onclick="alert('Hello');">level07</a>
 			</h1>
 		</div>
 		<div class="container">
 			<div class="box">
 				<p>
-					- after connecting as level01, we discover there is no file<br>available for us in the home directory<br>
-					- simple navigating will not help us<br>
-					- we presume there is a hidden password somewhere, so<br>we should look for it
+					- upon connecting as level07, we are given a
+					<span style="font-family: 'Courier New', Courier, monospace;">level07</span>
+					binary<br>
+					- after a few tests, we realize that it always prints its own name:<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">./level07 "phantom" "test"<br>level07</span>
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- we look of the occurence of 'flag01':<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">find . -type f -print -exec cat {} \;<br>2>/dev/null | grep -B 100 "flag01"</span><br>
-					- this gives us
-					<span style="font-family: 'Courier New', Courier, monospace;">/etc/passwd</span>
+					- we use 
+					<a href="https://rada.re/n/radare2.html" target="_blank"
+						style="color: #ff7844;">radare2</a>
+					to analyze the binary<br>
+					- now we know it calls
+					<span style="font-family: 'Courier New', Courier, monospace;">/bin/echo %s</span><br>
+					- the printed string is an environmental variable
+					<span style="font-family: 'Courier New', Courier, monospace;">LOGNAME</span><br>
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- looking into the directory, we find out that flag01 has<br>a visible encrypted and salted password<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">flag01:42hDRfypTqqnw</span><br>
-					- we transfer this string from the VM and try to crack it
+					- we check for contents of this variable:<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">echo $LOGNAME<br>level07</span><br>
+					- we can exploit this by direct modification
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- <a href="https://www.openwall.com/john/" target="_blank"
-						style="color: #ff7844;">John the Ripper</a> will work for this purpose<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">john --show encr_password</span><br>
-					- john-the-ripper detected crypt des<br>
-					- this gives us
-					<span style="font-family: 'Courier New', Courier, monospace;">42hDRfypTqqnw:abcdefg</span><br>
-					- we login using
-					<span style="font-family: 'Courier New', Courier, monospace;">su flag01</span>
-					and the password to get the flag
+					- we simply export
+					<span style="font-family: 'Courier New', Courier, monospace;">LOGNAME</span>
+					with our custom value<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">export LOGNAME="$(getflag)"</span><br>
+					- now we get the flag by executing
+					<span style="font-family: 'Courier New', Courier, monospace;">./level07</span>
 				</p>
 			</div>
 		</div>
 		<div class="button-container">
-			<button class="backward-button" onclick="location.href='../../level00/resources/level00.html'">level00</button>
+			<button class="backward-button" onclick="location.href='../../level06/resources/level06.html'">level06</button>
 			<button class="forward-button"
-				onclick="location.href='../../level02/resources/level02.html'">level02</button>
+				onclick="location.href='../../level08/resources/level08.html'">level08</button>
 		</div>
 	</div>
 

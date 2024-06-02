@@ -22,50 +22,57 @@
 		<div>
 			<h1>snow-crash
 				<a href="#" style="color: white; margin-left: 3%; text-decoration: none;"
-					onclick="alert('Hello');">level01</a>
+					onclick="alert('Hello');">level08</a>
 			</h1>
 		</div>
 		<div class="container">
 			<div class="box">
 				<p>
-					- after connecting as level01, we discover there is no file<br>available for us in the home directory<br>
-					- simple navigating will not help us<br>
-					- we presume there is a hidden password somewhere, so<br>we should look for it
+					- once we connect as level08, we can see two files:<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">level08 token</span><br>
+					- the binary displays the content of a file passed to it:<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">./level08<br>./level08 [file to read]</span>
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- we look of the occurence of 'flag01':<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">find . -type f -print -exec cat {} \;<br>2>/dev/null | grep -B 100 "flag01"</span><br>
-					- this gives us
-					<span style="font-family: 'Courier New', Courier, monospace;">/etc/passwd</span>
+					- if we try to open the token, we are informed we can't access it<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">You may not access 'token'</span><br>
+					- we use 
+					<a href="https://rada.re/n/radare2.html" target="_blank"
+						style="color: #ff7844;">radare2</a>
+					to analyze the binary<br>
+					- it uses
+					<span style="font-family: 'Courier New', Courier, monospace;">strstr</span>
+					to check if "token" is found in the filename
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- looking into the directory, we find out that flag01 has<br>a visible encrypted and salted password<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">flag01:42hDRfypTqqnw</span><br>
-					- we transfer this string from the VM and try to crack it
+					- it seems we need to find a way to bypass the token name by<br>modifying the path that leads to it<br>
+					- we will point to the token destination using a custom link file<br>
+					- this can by done by creating a
+					<a href="https://www.freecodecamp.org/news/symlink-tutorial-in-linux-how-to-create-and-remove-a-symbolic-link/" target="_blank"
+						style="color: #ff7844;">soft link</a>
+					for our path
+					<span style="font-family: 'Courier New', Courier, monospace;">~/token</span>
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- <a href="https://www.openwall.com/john/" target="_blank"
-						style="color: #ff7844;">John the Ripper</a> will work for this purpose<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">john --show encr_password</span><br>
-					- john-the-ripper detected crypt des<br>
-					- this gives us
-					<span style="font-family: 'Courier New', Courier, monospace;">42hDRfypTqqnw:abcdefg</span><br>
-					- we login using
-					<span style="font-family: 'Courier New', Courier, monospace;">su flag01</span>
-					and the password to get the flag
+					- one command is used for the desired effect<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">ln -s ~/token /tmp/fantom</span><br>
+					- now we can execute
+					<span style="font-family: 'Courier New', Courier, monospace;">./level08 /tmp/fantom</span><br>
+					- the flag is dislayed by indirectly opening
+					<span style="font-family: 'Courier New', Courier, monospace;">token</span>
 				</p>
 			</div>
 		</div>
 		<div class="button-container">
-			<button class="backward-button" onclick="location.href='../../level00/resources/level00.html'">level00</button>
+			<button class="backward-button" onclick="location.href='../../level07/resources/level07.html'">level07</button>
 			<button class="forward-button"
-				onclick="location.href='../../level02/resources/level02.html'">level02</button>
+				onclick="location.href='../../level09/resources/level09.html'">level09</button>
 		</div>
 	</div>
 

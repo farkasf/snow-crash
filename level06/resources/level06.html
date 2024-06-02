@@ -22,19 +22,18 @@
 		<div>
 			<h1>snow-crash
 				<a href="#" style="color: white; margin-left: 3%; text-decoration: none;"
-					onclick="alert('Hello');">level03</a>
+					onclick="alert('Hello');">level06</a>
 			</h1>
 		</div>
 		<div class="container">
 			<div class="box">
 				<p>
-					- after connecting as level01, we discover there is a
-					<span style="font-family: 'Courier New', Courier, monospace;">level03</span><br>
-					executable, which displays
-					<span style="font-family: 'Courier New', Courier, monospace;">"Exploit me"</span>
-					upon execution<br>
-					- we decide to move the executable outside of the VM to<br>
-					explore it a bit more
+					- once we connect as level06, we see two files:<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">level06 level06.php</span><br>
+					- the executable probably runs the script<br>
+					- after a few tests, we realize that
+					<span style="font-family: 'Courier New', Courier, monospace;">level06</span>
+					prints the contents<br>of a file passed to it as a parameter
 				</p>
 			</div>
 			<div class="box">
@@ -43,41 +42,49 @@
 					<a href="https://rada.re/n/radare2.html" target="_blank"
 						style="color: #ff7844;">radare2</a>
 					to analyze the binary<br>
-					- dynamic system call is happening upon execution<br>
-					- the tool displays the path used to execute<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">system("/usr/bin/env echo Exploit me")</span><br>
-					- now we can attack, since we know the weak spot
+					- upon execution,
+					<span style="font-family: 'Courier New', Courier, monospace;">file_get_contents()</span>
+					is called, reads<br>the entire file and returns a string<br>
+					- this is done in the function
+					<span style="font-family: 'Courier New', Courier, monospace;">x</span>
+					, so we might need to manipulate<br>the way it works
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- we create a custom
-					<span style="font-family: 'Courier New', Courier, monospace;">echo</span>
-					inside the 
-					<span style="font-family: 'Courier New', Courier, monospace;">/tmp</span>
-					directory<br>
-					- this will execute our own script:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">#!/bin/bash<br>/bin/getflag</span><br>
-					- we need to set the permission
-					<span style="font-family: 'Courier New', Courier, monospace;">chmod 111 /tmp/echo</span><br>
-					
+					- we might perform a command injection, since there is a known<br>
+					<a href="https://isharaabeythissa.medium.com/command-injection-preg-replace-php-function-exploit-fdf987f767df" target="_blank"
+						style="color: #ff7844;">exploit</a>
+					in the PHP
+					<span style="font-family: 'Courier New', Courier, monospace;">preg_replace()</span><br>
+					- the script uses a deprecate
+					<span style="font-family: 'Courier New', Courier, monospace;">/e</span>
+					regex modifier, which allows<br>us to use it in a regular expression<br>
+					- to get the flag, we will inject a
+					<a href="https://www.php.net/manual/en/function.shell-exec.php" target="_blank"
+						style="color: #ff7844;">PHP execute</a>
+					command<br>
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- and finally we override the path to the command<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">export PATH="/tmp:$PATH"</span><br>
-					- this gives us access to the shell of flag03<br>
-					- execution of
-					<span style="font-family: 'Courier New', Courier, monospace;">./level03</span>
-					now displays the flag
+					- our command needs to match the
+					<span style="font-family: 'Courier New', Courier, monospace;">(\[x (.*)\])</span>
+					regex<br>
+					- the final expression will pass
+					<span style="font-family: 'Courier New', Courier, monospace;">[x ${`getflag`}]</span><br>
+					- we add to string to a file located in
+					<span style="font-family: 'Courier New', Courier, monospace;">/tmp/fantom</span><br>
+					- executing
+					<span style="font-family: 'Courier New', Courier, monospace;">./level06 /tmp/fantom </span>
+					gives us the flag
 				</p>
 			</div>
 		</div>
 		<div class="button-container">
-			<button class="backward-button" onclick="location.href='../../level02/resources/level02.html'">level02</button>
+			<button class="backward-button" onclick="location.href='../../level05/resources/level05.html'">level05</button>
 			<button class="forward-button"
-				onclick="location.href='../../level04/resources/level04.html'">level04</button>
+				onclick="location.href='../../level07/resources/level07.html'">level07</button>
 		</div>
 	</div>
 
