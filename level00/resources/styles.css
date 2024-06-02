@@ -1,6 +1,6 @@
-@media (max-height: 400px) {
+@media (max-height: 470px) {
 	.box {
-		display: none;
+		display: none !important;
 	}
 }
 
