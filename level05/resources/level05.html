@@ -1,0 +1,120 @@
+<!-- 2024 by phantom society ffarkas & ehasalu -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>snow-crash</title>
+	<link rel="stylesheet" href="../../level00/resources/styles.css">
+	<link rel="icon" type='image/x-icon' href="../../level00/resources/favicon.ico">
+	<link
+		href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Merriweather:ital@0;1&family=Nanum+Gothic&family=Space+Mono&family=Work+Sans:wght@400;500;800&display=swap"
+		rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+		rel="stylesheet">
+</head>
+
+<body>
+	<div id="snow-container"></div>
+	<div class="content">
+		<div>
+			<h1>snow-crash<span style="color: white;margin-left: 3%;">level05</span></h1>
+		</div>
+		<div class="container">
+			<div class="box">
+				<p>
+					- upon connecting as level04, a notification is displayed<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">You have a new mail</span><br>
+					- this makes us wonder where can we find it<br>
+					- the home directory is empty, so we have to look elsewhere<br>
+				</p>
+			</div>
+			<div class="box">
+				<p>
+					- we look for the message from the base directory<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">find . -name "level05" 2>/dev/null</span><br>
+					- displaying the contents of
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">/var/mail/level05</span>
+					we find<br>out that it is a
+					<a href="https://man7.org/linux/man-pages/man5/crontab.5.html" target="_blank"
+						style="color: #ff7844;">crontab</a>
+					file executed every 2 minutes<br>
+				</p>
+			</div>
+			<div class="box">
+				<p>
+					- it executes
+					<span style="font-family: 'Courier New', Courier, monospace;">/usr/sbin/openarenaserver</span>
+					, which <br> runs files located in
+					<span style="font-family: 'Courier New', Courier, monospace;">/opt/openarenaserver/*</span>
+					and<br>then deletes contents of this folder<br>
+					- we can use this to execute our desired
+					<span style="font-family: 'Courier New', Courier, monospace;">getflab</span>
+					command
+				</p>
+			</div>
+			<div class="box">
+				<p>
+					- we create a script inside the
+					<span style="font-family: 'Courier New', Courier, monospace;">/opt/openarenaserver/</span>:<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">!#/bin/bash<br>/bin/getflag > /tmp/phantom</span><br>
+					- we set the permission
+					<span style="font-family: 'Courier New', Courier, monospace;">chmod 733 /tmp/phantom</span><br>
+					- after 2 minutes we recover the flag
+				</p>
+			</div>
+		</div>
+		<div class="button-container">
+			<button class="backward-button" onclick="location.href='../../level04/resources/level04.html'">level04</button>
+			<button class="forward-button"
+				onclick="location.href='../../level06/resources/level06.html'">level06</button>
+		</div>
+	</div>
+
+	<script>
+		const snowContainer = document.getElementById("snow-container");
+
+		const snowContent = ['❆', '❅'];
+
+		const random = (num) => {
+			return Math.floor(Math.random() * num);
+		}
+
+		const getRandomStyles = () => {
+			const top = random(100);
+			const left = random(100);
+			const dur = random(10) + 10;
+			const size = random(25) + 25;
+			return `top: -${top}%; left: ${left}%; font-size: ${size}px; animation-duration: ${dur}s; color: white;`;
+		}
+
+		const createSnow = (num) => {
+			for (let i = num; i > 0; i--) {
+				const snow = document.createElement("div");
+				snow.className = "snowflake";
+				snow.style.cssText = getRandomStyles();
+				snow.innerHTML = snowContent[random(snowContent.length)];
+				snowContainer.appendChild(snow);
+			}
+		}
+
+		const removeSnow = () => {
+			snowContainer.style.opacity = "0";
+			setTimeout(() => {
+				snowContainer.remove()
+			}, 500)
+		}
+
+		window.addEventListener("load", () => {
+			createSnow(100);
+		});
+
+		window.addEventListener("click", () => {
+			removeSnow()
+		});
+	</script>
+</body>
+
+</html>
