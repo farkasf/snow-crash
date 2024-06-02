@@ -20,60 +20,61 @@
 	<div id="snow-container"></div>
 	<div class="content">
 		<div>
-			<h1>snow-crash<span style="color: white;margin-left: 3%;">level03</span></h1>
+			<h1>snow-crash<span style="color: white;margin-left: 3%;">level04</span></h1>
 		</div>
 		<div class="container">
 			<div class="box">
 				<p>
-					- after connecting as level01, we discover there is a
-					<span style="font-family: 'Courier New', Courier, monospace;">level03</span><br>
-					executable, which displays
-					<span style="font-family: 'Courier New', Courier, monospace;">"Exploit me"</span>
-					upon execution<br>
-					- we decide to move the executable outside of the VM to<br>
-					explore it a bit more
+					- after connecting as level04, we discover there is a Perl script<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">level04.pl</span>
+					in the /home<br>
+					- upon further inspection, it does something on the port
+					<span style="font-family: 'Courier New', Courier, monospace;">4747</span><br>
+					- we can access it after setting the port forwarding in VirtualBox<br>
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- we use 
-					<a href="https://rada.re/n/radare2.html" target="_blank"
-						style="color: #ff7844;">radare2</a>
-					to analyze the binary<br>
-					- dynamic system call is happening upon execution<br>
-					- the tool displays the path used to execute<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">system("/usr/bin/env echo Exploit me")</span><br>
-					- now we can attack, since we know the weak spot
+					- <span style="font-family: 'Courier New', Courier, monospace;">localhost:4747</span>
+					shows us an empty page<br>
+					- now we know that the Perl script is running on the page<br>
+					and we can access it<br>
+					- this can be done via
+					<a href="https://en.wikipedia.org/wiki/Common_Gateway_Interface" target="_blank"
+						style="color: #ff7844;">GCI</a>
+					by sending and HTTP request<br>
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- we create a custom
+					- examining the script, we find out it defines function
+					<span style="font-family: 'Courier New', Courier, monospace;">x</span>
+					upon<br> accepting a parameter value
+					assigned to
+					<span style="font-family: 'Courier New', Courier, monospace;">y</span><br>
+					- it prints the
 					<span style="font-family: 'Courier New', Courier, monospace;">echo</span>
-					inside the 
-					<span style="font-family: 'Courier New', Courier, monospace;">/tmp</span>
-					directory<br>
-					- this will execute our own script:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">#!/bin/bash<br>/bin/getflag</span><br>
-					- we need to set the permission
-					<span style="font-family: 'Courier New', Courier, monospace;">chmod 111 /tmp/echo</span><br>
+					call on
+					<span style="font-family: 'Courier New', Courier, monospace;">y</span>
+					to display the output<br>
+					- overall, it displays the value of the passed parameter
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- and finally we override the path to the command<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">export PATH="/tmp:$PATH"</span><br>
-					- this gives us access to the shell of flag03<br>
-					- execution of
-					<span style="font-family: 'Courier New', Courier, monospace;">./level03</span>
-					now displays the flag
+					- we can use this to perform a command injection<br>
+					- HTTP request will include
+					<span style="font-family: 'Courier New', Courier, monospace;">`x=; getflag`</span><br>
+					- we access<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">localhost:4747/level04.pl?x=%3B%20getflag</span><br>
+					- this displays the flag for us
 				</p>
 			</div>
 		</div>
 		<div class="button-container">
-			<button class="backward-button" onclick="location.href='../../level02/resources/level02.html'">level02</button>
+			<button class="backward-button" onclick="location.href='../../level03/resources/level03.html'">level03</button>
 			<button class="forward-button"
-				onclick="location.href='../../level04/resources/level04.html'">level04</button>
+				onclick="location.href='../../level05/resources/level05.html'">level05</button>
 		</div>
 	</div>
 
