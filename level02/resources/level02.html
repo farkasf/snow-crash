@@ -1,0 +1,122 @@
+<!-- 2024 by phantom society ffarkas & ehasalu -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>snow-crash</title>
+	<link rel="stylesheet" href="../../level00/resources/styles.css">
+	<link rel="icon" type='image/x-icon' href="../../level00/resources/favicon.ico">
+	<link
+		href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Merriweather:ital@0;1&family=Nanum+Gothic&family=Space+Mono&family=Work+Sans:wght@400;500;800&display=swap"
+		rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+		rel="stylesheet">
+</head>
+
+<body>
+	<div id="snow-container"></div>
+	<div class="content">
+		<div>
+			<h1>snow-crash<span style="color: white;margin-left: 3%;">level02</span></h1>
+		</div>
+		<div class="container">
+			<div class="box">
+				<p>
+					- after connecting as level01, we discover there is a .pcap file<br>available for us in the home directory<br>
+					- this file stores network traffic (raw packet data)<br>
+					- moving this file out of the VM will allow inspection
+				</p>
+			</div>
+			<div class="box">
+				<p>
+					- we decide to use
+					<a href="https://www.wireshark.org" target="_blank"
+						style="color: #ff7844;">Wireshark</a> to analyze the
+					<span style="font-family: 'Courier New', Courier, monospace;">level02.pcap</span><br>
+					- it appears there was some packet exchange, so we follow<br>the data stream<br>
+					- apparently
+					<span style="font-family: 'Courier New', Courier, monospace;">ft_wandr...NDRel.L0L</span>
+					stores the secret
+				</p>
+			</div>
+			<div class="box">
+				<p>
+					- we switch the data display to hexacedimal, realising that
+					<span style="font-family: 'Courier New', Courier, monospace;">7F</span><br>
+					appears several times<br>
+					- looking into the
+					<a href="https://www.commfront.com/pages/ascii-chart" target="_blank"
+						style="color: #ff7844;">ASCII chart</a>
+					, this corresponds to
+					<span style="font-family: 'Courier New', Courier, monospace;">del</span><br>
+					- thus, some deletion of incorrect password happened
+				</p>
+			</div>
+			<div class="box">
+				<p>
+					- knowing this, we omit each character preceding the
+					<span style="font-family: 'Courier New', Courier, monospace;">del</span>
+					(.)<br>
+					- this way, we get the final password
+					<span style="font-family: 'Courier New', Courier, monospace;">ft_waNDReL0L</span><br>
+					- we login using
+					<span style="font-family: 'Courier New', Courier, monospace;">su flag02</span>
+					and the password to get the flag
+				</p>
+			</div>
+		</div>
+		<div class="button-container">
+			<button class="backward-button" onclick="location.href='../../level01/resources/level01.html'">level01</button>
+			<button class="forward-button"
+				onclick="location.href='../../level03/resources/level03.html'">level03</button>
+		</div>
+	</div>
+
+	<script>
+		const snowContainer = document.getElementById("snow-container");
+
+		const snowContent = ['❆', '❅'];
+
+		const random = (num) => {
+			return Math.floor(Math.random() * num);
+		}
+
+		const getRandomStyles = () => {
+			const top = random(100);
+			const left = random(100);
+			const dur = random(10) + 10;
+			const size = random(25) + 25;
+			return `top: -${top}%; left: ${left}%; font-size: ${size}px; animation-duration: ${dur}s; color: white;`;
+		}
+
+		const createSnow = (num) => {
+			for (let i = num; i > 0; i--) {
+				const snow = document.createElement("div");
+				snow.className = "snowflake";
+				snow.style.cssText = getRandomStyles();
+				snow.innerHTML = snowContent[random(snowContent.length)];
+				snowContainer.appendChild(snow);
+			}
+		}
+
+		const removeSnow = () => {
+			snowContainer.style.opacity = "0";
+			setTimeout(() => {
+				snowContainer.remove()
+			}, 500)
+		}
+
+		window.addEventListener("load", () => {
+			createSnow(100);
+		});
+
+		window.addEventListener("click", () => {
+			removeSnow()
+		});
+	</script>
+</body>
+
+</html>
