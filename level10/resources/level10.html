@@ -22,19 +22,20 @@
 		<div>
 			<h1>snow-crash
 				<a href="#" style="color: white; margin-left: 3%; text-decoration: none;"
-					onclick="alert('Hello');">level09</a>
+					onclick="alert('Hello');">level10</a>
 			</h1>
 		</div>
 		<div class="container">
 			<div class="box">
 				<p>
-					- connecting as level09 reveals two files (
-					<span style="font-family: 'Courier New', Courier, monospace;">level09 token</span>)<br>
-					- opening the token reveals a possibly encrypted password:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">f4kmm6p|=��p�n��DB�Du{���</span><br>
-					- the binary decrypts its content to
-					<span style="font-family: 'Courier New', Courier, monospace;">tpmhr</span>
-					, but this is not the<br>password, so we need to explore it a bit more
+					- upon logging in as level09 we are given two files:<br>
+					an executable (
+					<span style="font-family: 'Courier New', Courier, monospace;">level09</span>)
+					and a protected file (
+					<span style="font-family: 'Courier New', Courier, monospace;">token</span>)<br>
+					- after testing, we know that the binary takes a file to read and<br>
+					a host IP address as arguments<br>
+					- we need to find a way to read the token using the executable
 				</p>
 			</div>
 			<div class="box">
@@ -42,38 +43,46 @@
 					- we use 
 					<a href="https://rada.re/n/radare2.html" target="_blank"
 						style="color: #ff7844;">radare2</a>
-					to analyze the binary, which reveals<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">You should not reverse this</span><br>
-					- apparently we need to reverse an action that already happened<br>
-					- this might mean the token is already decrypted, but not fully<br>readable, so we need to understand the decrypting process
+					and
+					<a href="https://man7.org/linux/man-pages/man1/ltrace.1.html" target="_blank"
+						style="color: #ff7844;">ltrace</a>
+					to analyze the binary<br>
+					- it checks if we have permission to read the file via
+					<span style="font-family: 'Courier New', Courier, monospace;">access()</span>,<br>
+					opens it with
+					<span style="font-family: 'Courier New', Courier, monospace;">open()</span>
+					and tries to send it to the host IP<br>
+					- the binary is thus vulnerable to
+					<a href="https://portswigger.net/web-security/race-conditions" target="_blank"
+						style="color: #ff7844;">race conditions</a>
+					of access/open
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- after playing with the executable, we see that for every<br>character we pass to it, it adds its position to ASCII value:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">a -> a | aa -> ab | ab -> ac | abc -> ace<br></span>
-					- this can be expressed using a formula<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">str[i] += i<br></span>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">file → access() → open()</span><br>
+					a) if we have rights to the file, it opens<br>
+					b) if we don't have rights to the file, it doesn't open<br>
+					c) if we have right to a certain file and very quickly symlink it to<br>&nbsp;&nbsp;&nbsp;&nbsp;the actual token, we might be able to bypass the check
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- to reverse the action, we create a custom binary which uses<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">str[i] -= i<br></span>
-					- our C++-based executable
-					<span style="font-family: 'Courier New', Courier, monospace;">filius</span>
-					will be used now<br>
-					- we can move the token file outside of the VM<br>
-					- calling
-					<span style="font-family: 'Courier New', Courier, monospace;">./filius token </span>
-					reveals the flag
+					- we spam the binary using
+					<span style="font-family: 'Courier New', Courier, monospace;">phantom_spam.sh</span>
+					, which keeps<br>
+					&nbsp;&nbsp;<span style="text-decoration: underline;">1.</span> &nbsp;executing
+					<span style="font-family: 'Courier New', Courier, monospace;">level10</span> with a link to a file/token<br>
+					&nbsp;&nbsp;<span style="text-decoration: underline;">2.</span> &nbsp;switching the symlink between the file and token<br>
+					&nbsp;&nbsp;<span style="text-decoration: underline;">3.</span> &nbsp;listening to the port 6969 for answer<br>
+					- after running it for a few seconds, we get the flag
 				</p>
 			</div>
 		</div>
 		<div class="button-container">
-			<button class="backward-button" onclick="location.href='../../level08/resources/level08.html'">level08</button>
+			<button class="backward-button" onclick="location.href='../../level09/resources/level09.html'">level09</button>
 			<button class="forward-button"
-				onclick="location.href='../../level10/resources/level10.html'">level10</button>
+				onclick="location.href='../../level11/resources/level11.html'">level11</button>
 		</div>
 	</div>
 

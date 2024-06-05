@@ -22,58 +22,57 @@
 		<div>
 			<h1>snow-crash
 				<a href="#" style="color: white; margin-left: 3%; text-decoration: none;"
-					onclick="alert('Hello');">level09</a>
+					onclick="alert('Hello');">level11</a>
 			</h1>
 		</div>
 		<div class="container">
 			<div class="box">
 				<p>
-					- connecting as level09 reveals two files (
-					<span style="font-family: 'Courier New', Courier, monospace;">level09 token</span>)<br>
-					- opening the token reveals a possibly encrypted password:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">f4kmm6p|=��p�n��DB�Du{���</span><br>
-					- the binary decrypts its content to
-					<span style="font-family: 'Courier New', Courier, monospace;">tpmhr</span>
-					, but this is not the<br>password, so we need to explore it a bit more
+					- once we connect as level11, we are provided with a Lua script:<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">level11.lua</span><br>
+					- upon inspecting the code, we see that it runs a
+					<span style="font-family: 'Courier New', Courier, monospace;">localhost</span><br>
+					server on port
+					<span style="font-family: 'Courier New', Courier, monospace;">5151</span>
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- we use 
-					<a href="https://rada.re/n/radare2.html" target="_blank"
-						style="color: #ff7844;">radare2</a>
-					to analyze the binary, which reveals<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">You should not reverse this</span><br>
-					- apparently we need to reverse an action that already happened<br>
-					- this might mean the token is already decrypted, but not fully<br>readable, so we need to understand the decrypting process
+					- the script is pretty straightforward containing one function:<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">hash(pass)</span><br>
+					- this uses
+					<a href="https://www.tutorialspoint.com/lua/lua_file_io.htm" target="_blank"
+						style="color: #ff7844;">io.popen()</a>
+					to execute
+					<span style="font-family: 'Courier New', Courier, monospace;">echo</span>
+					and
+					<span style="font-family: 'Courier New', Courier, monospace;">sha1sum</span>
+					on the<br>pass, essentially hashing it
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- after playing with the executable, we see that for every<br>character we pass to it, it adds its position to ASCII value:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">a -> a | aa -> ab | ab -> ac | abc -> ace<br></span>
-					- this can be expressed using a formula<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">str[i] += i<br></span>
+					- our task is to exploit this so that we execute
+					<span style="font-family: 'Courier New', Courier, monospace;">getflag</span><br>
+					- the two commands are piped:<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">"echo "..pass.." | sha1sum", "r"</span><br>
+					- because of this, we need to redirect our output into a file<br>before it reaches the pipe
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- to reverse the action, we create a custom binary which uses<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">str[i] -= i<br></span>
-					- our C++-based executable
-					<span style="font-family: 'Courier New', Courier, monospace;">filius</span>
-					will be used now<br>
-					- we can move the token file outside of the VM<br>
-					- calling
-					<span style="font-family: 'Courier New', Courier, monospace;">./filius token </span>
-					reveals the flag
+					- now we connect to the server:<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">nc localhost 5151</span><br>
+					and enter the 'injection' password:<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">'; getflag > /tmp/phantom'</span><br>
+					- this gives us the flag token
 				</p>
 			</div>
 		</div>
 		<div class="button-container">
-			<button class="backward-button" onclick="location.href='../../level08/resources/level08.html'">level08</button>
+			<button class="backward-button" onclick="location.href='../../level10/resources/level10.html'">level10</button>
 			<button class="forward-button"
-				onclick="location.href='../../level10/resources/level10.html'">level10</button>
+				onclick="location.href='../../level12/resources/level12.html'">level12</button>
 		</div>
 	</div>
 

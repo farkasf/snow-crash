@@ -22,19 +22,19 @@
 		<div>
 			<h1>snow-crash
 				<a href="#" style="color: white; margin-left: 3%; text-decoration: none;"
-					onclick="alert('Hello');">level09</a>
+					onclick="alert('Hello');">level13</a>
 			</h1>
 		</div>
 		<div class="container">
 			<div class="box">
 				<p>
-					- connecting as level09 reveals two files (
-					<span style="font-family: 'Courier New', Courier, monospace;">level09 token</span>)<br>
-					- opening the token reveals a possibly encrypted password:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">f4kmm6p|=��p�n��DB�Du{���</span><br>
-					- the binary decrypts its content to
-					<span style="font-family: 'Courier New', Courier, monospace;">tpmhr</span>
-					, but this is not the<br>password, so we need to explore it a bit more
+					- connecting as level13 reveals one available binary:<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">level13</span><br>
+					- after a few tests, we know it takes no arguments to run<br>
+					- it simply checks if the
+					<a href="https://linuxhandbook.com/uid-linux/" target="_blank"
+						style="color: #ff7844;">uid</a>
+					matches '4242'
 				</p>
 			</div>
 			<div class="box">
@@ -42,38 +42,48 @@
 					- we use 
 					<a href="https://rada.re/n/radare2.html" target="_blank"
 						style="color: #ff7844;">radare2</a>
-					to analyze the binary, which reveals<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">You should not reverse this</span><br>
-					- apparently we need to reverse an action that already happened<br>
-					- this might mean the token is already decrypted, but not fully<br>readable, so we need to understand the decrypting process
+					and
+					<a href="https://man7.org/linux/man-pages/man1/ltrace.1.html" target="_blank"
+						style="color: #ff7844;">ltrace</a>
+					to analyze the binary<br>
+					- it uses
+					<span style="font-family: 'Courier New', Courier, monospace;">getuid()</span>
+					to return the user ID of the calling process<br>
+					- the easiest way to bypass this is to modify the registers during<br>
+					runtime, so that the rest of the code thinks we are user 4242
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- after playing with the executable, we see that for every<br>character we pass to it, it adds its position to ASCII value:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">a -> a | aa -> ab | ab -> ac | abc -> ace<br></span>
-					- this can be expressed using a formula<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">str[i] += i<br></span>
+					- we use
+					<a href="https://sourceware.org/gdb/" target="_blank"
+						style="color: #ff7844;">gdb</a> 
+					and disassemble main for this purpose<br>
+					- we add a break to the verification of UID<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">break function getuid</span><br>
+					- this stops the execution when the function is called and<br>
+					allows us to modify the UID value
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- to reverse the action, we create a custom binary which uses<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">str[i] -= i<br></span>
-					- our C++-based executable
-					<span style="font-family: 'Courier New', Courier, monospace;">filius</span>
-					will be used now<br>
-					- we can move the token file outside of the VM<br>
-					- calling
-					<span style="font-family: 'Courier New', Courier, monospace;">./filius token </span>
-					reveals the flag
+					- we run and step until the exit from the
+					<span style="font-family: 'Courier New', Courier, monospace;">getuid()</span>
+					function<br>
+					- we check the value of the
+					<a href="https://www.tutorialspoint.com/assembly_programming/assembly_registers.htm" target="_blank"
+						style="color: #ff7844;">eax register</a> 
+					to see it's set to 2013<br>
+					- this can be modified:<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">set $eax=4242</span><br>
+					- further stepping reveals our flag
 				</p>
 			</div>
 		</div>
 		<div class="button-container">
-			<button class="backward-button" onclick="location.href='../../level08/resources/level08.html'">level08</button>
+			<button class="backward-button" onclick="location.href='../../level12/resources/level12.html'">level12</button>
 			<button class="forward-button"
-				onclick="location.href='../../level10/resources/level10.html'">level10</button>
+				onclick="location.href='../../level14/resources/level14.html'">level14</button>
 		</div>
 	</div>
 

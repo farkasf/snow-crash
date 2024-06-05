@@ -22,58 +22,67 @@
 		<div>
 			<h1>snow-crash
 				<a href="#" style="color: white; margin-left: 3%; text-decoration: none;"
-					onclick="alert('Hello');">level09</a>
+					onclick="alert('Hello');">level14</a>
 			</h1>
 		</div>
 		<div class="container">
 			<div class="box">
 				<p>
-					- connecting as level09 reveals two files (
-					<span style="font-family: 'Courier New', Courier, monospace;">level09 token</span>)<br>
-					- opening the token reveals a possibly encrypted password:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">f4kmm6p|=��p�n��DB�Du{���</span><br>
-					- the binary decrypts its content to
-					<span style="font-family: 'Courier New', Courier, monospace;">tpmhr</span>
-					, but this is not the<br>password, so we need to explore it a bit more
+					- upon connecting as the final level, we don't get any binaries<br>
+					- navigating through the filesystem is not helpful either<br>
+					- we look from the base directory, but no results again<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">find . -name "level14" 2>/dev/null</span><br>
+					<span style="font-family: 'Courier New', Courier, monospace;">find . -name "flag14" 2>/dev/null</span>
 				</p>
 			</div>
 			<div class="box">
 				<p>
+					- should we exploit the
+					<span style="font-family: 'Courier New', Courier, monospace;">/bin/getflag</span>
+					itself?<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">LET'S GOOO!</span><br>
 					- we use 
 					<a href="https://rada.re/n/radare2.html" target="_blank"
 						style="color: #ff7844;">radare2</a>
-					to analyze the binary, which reveals<br>
-					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">You should not reverse this</span><br>
-					- apparently we need to reverse an action that already happened<br>
-					- this might mean the token is already decrypted, but not fully<br>readable, so we need to understand the decrypting process
+					and
+					<a href="https://man7.org/linux/man-pages/man1/ltrace.1.html" target="_blank"
+						style="color: #ff7844;">ltrace</a>
+					to analyze the binary<br>
+					- providing us with insufficient data, we will only use
+					<a href="https://sourceware.org/gdb/" target="_blank"
+						style="color: #ff7844;">gdb</a> 
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- after playing with the executable, we see that for every<br>character we pass to it, it adds its position to ASCII value:<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">a -> a | aa -> ab | ab -> ac | abc -> ace<br></span>
-					- this can be expressed using a formula<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">str[i] += i<br></span>
+					- we add breakpoints everywhere to inspect the function call list<br>
+					- we see that 2 major checks are done by
+					<a href="https://man7.org/linux/man-pages/man2/ptrace.2.html" target="_blank"
+						style="color: #ff7844;">ptrace()</a>
+					and
+					<a href="https://man7.org/linux/man-pages/man2/getuid.2.html" target="_blank"
+						style="color: #ff7844;">getuid()</a><br>
+					- this can be exploited easily, we just need the flag14 UID:<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">id -u flag14<br>3014</b></span>
 				</p>
 			</div>
 			<div class="box">
 				<p>
-					- to reverse the action, we create a custom binary which uses<br>
-					<span style="font-family: 'Courier New', Courier, monospace;">str[i] -= i<br></span>
-					- our C++-based executable
-					<span style="font-family: 'Courier New', Courier, monospace;">filius</span>
-					will be used now<br>
-					- we can move the token file outside of the VM<br>
-					- calling
-					<span style="font-family: 'Courier New', Courier, monospace;">./filius token </span>
-					reveals the flag
+					- at the
+					<span style="font-family: 'Courier New', Courier, monospace;">ptrace()</span>
+					break we see that the value in eax is -1, so<br>
+					we set it to 0, which bypasses the gdb debugging check<br>
+					- then we step towards
+					<span style="font-family: 'Courier New', Courier, monospace;">getuid()</span>
+					break, where we set the eax<br>
+					to 3014 to match the flag14 uid<br>
+					- we step again to reveal the flag
 				</p>
 			</div>
 		</div>
 		<div class="button-container">
-			<button class="backward-button" onclick="location.href='../../level08/resources/level08.html'">level08</button>
-			<button class="forward-button"
-				onclick="location.href='../../level10/resources/level10.html'">level10</button>
+			<button class="backward-button" onclick="location.href='../../level13/resources/level13.html'">level13</button>
+			<button class="backward-button" onclick="location.href='../../level00/resources/index.html'">homepage</button>
 		</div>
 	</div>
 

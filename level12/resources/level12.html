@@ -1,0 +1,135 @@
+<!-- 2024 by phantom society ffarkas & ehasalu -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>snow-crash</title>
+	<link rel="stylesheet" href="../../level00/resources/styles.css">
+	<link rel="icon" type='image/x-icon' href="../../level00/resources/favicon.ico">
+	<link
+		href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Merriweather:ital@0;1&family=Nanum+Gothic&family=Space+Mono&family=Work+Sans:wght@400;500;800&display=swap"
+		rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+		rel="stylesheet">
+</head>
+
+<body>
+	<div id="snow-container"></div>
+	<div class="content">
+		<div>
+			<h1>snow-crash
+				<a href="#" style="color: white; margin-left: 3%; text-decoration: none;"
+					onclick="alert('Hello');">level12</a>
+			</h1>
+		</div>
+		<div class="container">
+			<div class="box">
+				<p>
+					- once we connect as level12, we can see a perl script<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">level12.pl</span><br>
+					- our interest lies in its function
+					<span style="font-family: 'Courier New', Courier, monospace;">t</span>
+					, which converts the contents<br>of
+					<span style="font-family: 'Courier New', Courier, monospace;">$_[0]</span>
+					to uppercase letters and removes everything after the<br>
+					first whitespace it encounters (
+					<a href="https://www.freecodecamp.org/news/what-does-s-in-regex-mean-space-and-negated-space-metacharacters/" target="_blank"
+						style="color: #ff7844;">regex</a>
+					<span style="font-family: 'Courier New', Courier, monospace;">/\s.*/</span>
+					)
+				</p>
+			</div>
+			<div class="box">
+				<p>
+					- after the string modification, the function continues using the<br>argument to match it to
+					<span style="font-family: 'Courier New', Courier, monospace;">/tmp/xd</span>
+					using
+					<a href="https://www.geeksforgeeks.org/egrep-command-in-linux-with-examples/" target="_blank"
+						style="color: #ff7844;">egrep</a> :<br>
+					<span style="font-family: 'Courier New', Courier, monospace;">egrep "^$xx" /tmp/xd 2>&1</span><br>
+					- we presume we can do a command injection using a file<br>located in
+					<span style="font-family: 'Courier New', Courier, monospace;">/tmp</span>
+					to retrieve the flag
+				</p>
+			</div>
+			<div class="box">
+				<p>
+					- we can't use a direct injection into the function<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">x="getflag > /tmp/flag"</span><br>
+					as it will be capitalized and the text after the 1st space deleted <br>
+					- a file
+					<span style="font-family: 'Courier New', Courier, monospace;">/tmp/PHANTOM</span>
+					containing the script can be created
+				</p>
+			</div>
+			<div class="box">
+				<p>
+					- as the path would be capitalized too, we bypass it by using:<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">/*/PHANTOM</span><br>
+					- now we connect to the port
+					<span style="font-family: 'Courier New', Courier, monospace;">4646</span>
+					and inject by loading<br>
+					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">localhost:9090/?x=$(/*/PHANTOM)</span><br>
+					- 
+					<span style="font-family: 'Courier New', Courier, monospace;">cat /tmp/flag</span>
+					reveals the token
+				</p>
+			</div>
+		</div>
+		<div class="button-container">
+			<button class="backward-button" onclick="location.href='../../level11/resources/level11.html'">level11</button>
+			<button class="forward-button"
+				onclick="location.href='../../level13/resources/level13.html'">level13</button>
+		</div>
+	</div>
+
+	<script>
+		const snowContainer = document.getElementById("snow-container");
+
+		const snowContent = ['❆', '❅'];
+
+		const random = (num) => {
+			return Math.floor(Math.random() * num);
+		}
+
+		const getRandomStyles = () => {
+			const top = random(100);
+			const left = random(100);
+			const dur = random(10) + 10;
+			const size = random(25) + 25;
+			return `top: -${top}%; left: ${left}%; font-size: ${size}px; animation-duration: ${dur}s; color: white;`;
+		}
+
+		const createSnow = (num) => {
+			for (let i = num; i > 0; i--) {
+				const snow = document.createElement("div");
+				snow.className = "snowflake";
+				snow.style.cssText = getRandomStyles();
+				snow.innerHTML = snowContent[random(snowContent.length)];
+				snowContainer.appendChild(snow);
+			}
+		}
+
+		const removeSnow = () => {
+			snowContainer.style.opacity = "0";
+			setTimeout(() => {
+				snowContainer.remove()
+			}, 500)
+		}
+
+		window.addEventListener("load", () => {
+			createSnow(100);
+		});
+
+		window.addEventListener("keydown", (event) => {
+			if (event.code === "Space") {
+				removeSnow();
+			}
+		});
+	</script>
+</body>
+
+</html>
