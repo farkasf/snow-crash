@@ -36,7 +36,7 @@
 			</div>
 			<div class="box">
 				<p>
-					- first we connect to the level0:<br>
+					- first we connect as level0 through the terminal:<br>
 					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">ssh level00@localhost
 						-p &lt;port&gt;</span><br>
 					<span>- there is no file available for us in the home directory</span>
@@ -44,21 +44,21 @@
 			</div>
 			<div class="box">
 				<p>
-					- we navigate to the base directory and use a command:<br>
+					- we navigate to the base directory and look for the flag:<br>
 					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">find / -type f -user
 						flag00</span><br>
-					- we discover there is a file present in
+					- we discover that there is a file present in
 					<span style="font-family: 'Courier New', Courier, monospace;">usr/bin/john</span><br>
 					- after using
 					<span style="font-family: 'Courier New', Courier, monospace;">cat</span>
-					command, we get a string
+					, we a string is displayed
 					<span style="font-style: italic;">'cdiiddwpgswtgt'</span>
 				</p>
 			</div>
 			<div class="box">
 				<p>
 					- the string is probably an encyphered password<br>
-					- online tool <a href="https://www.cachesleuth.com/multidecoder/" target="_blank"
+					- an online tool <a href="https://www.cachesleuth.com/multidecoder/" target="_blank"
 						style="color: #ff7844;">Multi decoder</a> detects the Caesar/Rot-15 cipher<br>
 					- the password is
 					<span style="font-family: 'Courier New', Courier, monospace;">nottoohardhere</span><br>

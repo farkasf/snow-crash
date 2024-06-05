@@ -30,7 +30,7 @@
 				<p>
 					- after connecting as level04, we discover there is a Perl script<br>
 					<span style="font-family: 'Courier New', Courier, monospace;">level04.pl</span>
-					in the /home<br>
+					in the home directory<br>
 					- upon further inspection, it does something on the port
 					<span style="font-family: 'Courier New', Courier, monospace;">4747</span><br>
 					- we can access it after setting the port forwarding in VirtualBox<br>
@@ -68,7 +68,7 @@
 					- we can use this to perform a command injection<br>
 					- HTTP request will include
 					<span style="font-family: 'Courier New', Courier, monospace;">`x=; getflag`</span><br>
-					- we access<br>
+					- we access the script through port 4747 and inject:<br>
 					<span style="font-family: 'Courier New', Courier, monospace; line-height: 2;">localhost:4747/level04.pl?x=%3B%20getflag</span><br>
 					- this displays the flag for us
 				</p>
